@@ -6,7 +6,7 @@ I assume that my readers have some basic knowledge about TensorFlow - primarily 
 
 When training neural networks, we usually split our available data into three separate files: training, validation, and test data. In order to gauge the stability of the network architecture, it is good to visualize how your network performs against the validation data after every x iterations of training. TensorBoard provides us with some great visualization tools to observe how values like the training cost and cross-validation cost evolve through the training process. The code snippet below shows the traditional way to set up a scalar summary to track the training cost through the training.
 
-```
+```python
 # some other ops and variables set up previously ...
 
 cost = tf.losses.mean_squared_error(labels, logits)﻿﻿
@@ -25,7 +25,7 @@ summary_op = tf.summary.merge_all()﻿﻿
 
 You typically set up a `FileWriter` object (which I will constantly refer to as a 'summary writer') in your TensorFlow session to save the summaries to disk, and reference them from the command line when opening TensorBoard.
 
-```
+```python
 with tf.Session(graph=my_graph) as sess:
   writer = tf.summary.FileWriter(your_summary_directory, sess.graph)
   # stuff
@@ -44,7 +44,7 @@ Now when you open up TensorBoard, you can see your cost function plotted in the 
 
 We see that our cost function is decreasing, which is good! But, is the network *really learning*, or is it just curve-fitting the training data? Let's set up a summary for our validation error. The following snippets will be a bit more detailed this time around.
 
-```
+```python
 global_step = tf.Variable(0, trainable=False, dtype='int64')
 tf.add_to_collection('global_step', global_step)
 
@@ -74,7 +74,7 @@ Here, instead of using the generic `GraphKeys` collection, we assign the trainin
 
 Now from the module from which we are running our training, we run the training summary op after every training iteration, and the validation summary op after every `x` training iterations. Here I've chosen `x = 3`.
 
-```
+```python
 train_op = my_graph.get_collection('train_op')[0]
 cost = my_graph.get_collection('cost')[0]
 training_summary_op = my_graph.get_collection('training_summary_op')[0]
@@ -114,7 +114,7 @@ The short answer is: **you can't**. TensorFlow does not currently support this t
 
 We first need to add some additional ops and variables to our graph. They are as follows:
 
-```
+```python
 # ... previous graph code above ...#
 
 dummy_cost = tf.Variable(0.0)
@@ -127,7 +127,7 @@ tf.add_to_collection('dummy_summary_op', dummy_summary_op)
 
 Next, in the module where we are running our training, we will need to set up **two summary writers**, instead of just one.
 
-```
+```python
 with tf.Session(graph=my_graph) as sess:
   train_writer = tf.summary.FileWriter(train_directory, sess.graph)
   validate_writer = tf.summary.FileWriter(validate_directory, sess.graph)
@@ -135,7 +135,7 @@ with tf.Session(graph=my_graph) as sess:
 
 Now, when we write test data, we will use the train_writer, and when we write validation data, we will use the validation_writer. So the code we had before (with accessors to our new ops and variables) becomes,
 
-```
+```python
 train_op = my_graph.get_collection('train_op')[0]
 cost = my_graph.get_collection('cost')[0]
 v_cost = my_graph.get_collection('v_cost')[0]
@@ -179,7 +179,7 @@ Now, because the validation and training scalar summaries are coming from two di
 
 In order to get these curves on the same plot, we are going to use our `dummy_cost` variable and `dummy_summary_op`.
 
-```
+```python
 if (_global_step + 1) % 3 * FLAGS.update_freq == 0:
     _global_step, summary, _cost, _v_cost = sess.run([global_step,
                                              validation_summary_op,
