@@ -8,7 +8,7 @@ Unit testing is an integral part of the life cycle of any software project; this
 
 This is a computation graph I was working on earlier -- it's a simple autoencoder network. The graph visualizer lets you zoom in on and expand subsections of the graph, and this can be very useful when you're trying to make sure everything is wired together correctly.
 
-f TensorBoard isn't your cup of tea, there is a testing module built into the TensorFlow framework which allows you to hard-code unit tests for whatever you're working on [`TestCase` class](https://www.tensorflow.org/api_docs/python/tf/test/TestCase?lipi=urn%3Ali%3Apage%3Ad_flagship3_pulse_read%3BhDaHDgrsRBOU7QwE13JCOA%3D%3D) in TensorFlow).
+If TensorBoard isn't your cup of tea, there is a testing module built into the TensorFlow framework which allows you to hard-code unit tests for whatever you're working on [`TestCase` class](https://www.tensorflow.org/api_docs/python/tf/test/TestCase?lipi=urn%3Ali%3Apage%3Ad_flagship3_pulse_read%3BhDaHDgrsRBOU7QwE13JCOA%3D%3D) in TensorFlow).
 
 I highly recommend checking out the documentation in the link I provided above, but here's a very simple use-case: Imagine you've just completed your graph building module; you'd like to ensure all your ops are in the graph collection, and that all the tensors (`Variable` objects) are initializing correctly. Now would be a good time to set up a unit testing class.
 
