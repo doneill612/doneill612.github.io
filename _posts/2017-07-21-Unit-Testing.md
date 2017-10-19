@@ -1,6 +1,6 @@
 ---
 layout: post
-title: TensorFlow: Don't forget to unit test!
+title: Don't forget to unit test!
 ---
 Unit testing is an integral part of the life cycle of any software project; this is especially true when creating complex models with TensorFlow. My previous article briefly discussed the 'summary' capabilities of [TensorBoard](https://www.tensorflow.org/get_started/summaries_and_tensorboard?lipi=urn%3Ali%3Apage%3Ad_flagship3_pulse_read%3BhDaHDgrsRBOU7QwE13JCOA%3D%3D) which allow us to visualize the evolution of variables of interest, such as training and cross-validation costs, during the training process. Before I continue with this discussion, I'd also like to point out that TensorBoard also has a computation graph visualization tool that looks something like this:
 
