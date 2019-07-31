@@ -25,7 +25,7 @@ footer-links:
   flickr:
   github: doneill612
   instagram:
-  linkedin:
+  linkedin: doneill612
   pinterest:
   rss: # just type anything here for a working RSS icon
   twitter:
@@ -67,10 +67,10 @@ kramdown:
   # Use GitHub flavored markdown, including triple backtick fenced code blocks
   input: GFM
   # Jekyll 3 and GitHub Pages now only support rouge for syntax highlighting
-  syntax_highlighter: rouge
-  syntax_highlighter_opts:
+  #syntax_highlighter: rouge
+  #syntax_highlighter_opts:
     # Use existing pygments syntax highlighting css
-    css_class: 'highlight'
+    #css_class: 'highlight'
 
 # Set the Sass partials directory, as we're using @imports
 sass:
