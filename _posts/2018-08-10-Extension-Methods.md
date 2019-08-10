@@ -22,9 +22,10 @@ using System.Linq;
 Dictionary<DateTime, float> dict = GetFloatDict();
 
 // Exponential moving average never looked so good...
-var ema = myFloatVals.Select(kv => kv.Value)
-					 .DefaultIfEmpty()
-					 .Aggregate((prev, curr) => weight * curr + (1 - weight) * prev);
+var ema = myFloatVals
+			.Select(kv => kv.Value)
+            .DefaultIfEmpty()
+			.Aggregate((prev, curr) => weight * curr + (1 - weight) * prev);
 ```
 
 But if you remove your `using` directive, what happens? None of those methods work anymore! This is because
@@ -177,8 +178,11 @@ namespace ApplicationNamespace
 
 			// initialize bar's float array somewhere
 
-			var fooMean = foo.CalculateMean(); // using our extension method!
-			var barMean = bar.CalculateMean(); // using our extension method!
+			// using our extension method!
+			var fooMean = foo.CalculateMean();
+			
+			// using our extension method!
+			var barMean = bar.CalculateMean();
 		}
 		
 	}
@@ -209,7 +213,8 @@ namespace Extensions
 {
 	static class DictionaryExtensions
 	{
-		static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<TKey, TValue> action)
+		static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, 
+										  Action<TKey, TValue> action)
 		{
 			foreach (var kvPair in dict)
 			{
@@ -228,8 +233,7 @@ Let's rewrite that code from above...
 ```csharp
 using Extensions;
 
-GetShoppingCart().ForEach((item, price) => 
-	Console.WriteLine($"{itemName} costed me {price} dollars."));
+GetShoppingCart().ForEach((item, price) => Console.WriteLine($"{itemName} costed me {price} dollars."));
 ```
 
 There we have it! We've added an extension method to a type (`IDictionary`) that we have no control over.
