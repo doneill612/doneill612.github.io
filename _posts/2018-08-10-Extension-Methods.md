@@ -22,10 +22,7 @@ using System.Linq;
 Dictionary<DateTime, float> dict = GetFloatDict();
 
 // Exponential moving average never looked so good...
-var ema = myFloatVals
-			.Select(kv => kv.Value)
-            .DefaultIfEmpty()
-			.Aggregate((prev, curr) => weight * curr + (1 - weight) * prev);
+var ema = myFloatVals.Select(kv => kv.Value).DefaultIfEmpty().Aggregate((prev, curr) => weight * curr + (1 - weight) * prev);
 ```
 
 But if you remove your `using` directive, what happens? None of those methods work anymore! This is because
