@@ -22,10 +22,9 @@ using System.Linq;
 Dictionary<DateTime, float> dict = GetFloatDict();
 
 // Exponential moving average never looked so good...
-var ema = myFloatVals
-			.Select(kv => kv.Value)
-            .DefaultIfEmpty()
-			.Aggregate((prev, curr) => weight * curr + (1 - weight) * prev);
+var ema = dict.Select(kv => kv.Value)
+              .DefaultIfEmpty()
+	      .Aggregate((prev, curr) => weight * curr + (1 - weight) * prev);
 ```
 
 But if you remove your `using` directive, what happens? None of those methods work anymore! This is because
@@ -67,12 +66,12 @@ Let's start with building an extension method for our own type. We'll first cons
 ```csharp
 namespace DefaultNamespace
 {
-	interface IFoo
-	{
-		float[] Values { get; }
+    interface IFoo
+    {
+	float[] Values { get; }
 
-		float SumElements();
-	}
+	float SumElements();
+    }
 }
 ```
 
@@ -82,25 +81,25 @@ for computing the mean of the elements.
 ```csharp
 namespace DefaultNamespace
 {
-	class Foo : IFoo
+    class Foo : IFoo
+    {
+	float[] Values { get; set; }
+
+	float SumElements()
 	{
-		float[] Values { get; set; }
-
-		float SumElements()
-		{
-			float sum = float.Zero;
-			for (int i = 0; i < values.Length; ++i)
-			{
-				sum += values[i];
-			}
-			return sum;
-		}
-
-		float CalculateMean()
-		{
-			return SumElements() / values.Length;
-		}
+	    float sum = float.Zero;
+	    for (int i = 0; i < values.Length; ++i)
+	    {
+		sum += values[i];
+	    }
+	    return sum;
 	}
+
+	float CalculateMean()
+	{
+	    return SumElements() / values.Length;
+	}
+    }
 }
 ```
 
@@ -109,26 +108,26 @@ Now down the line, you realize, "Hey, I need to make another class `Bar` that al
 ```csharp
 namespace DefaultNamespace
 {
-	class Bar : IFoo
+    class Bar: IFoo
+    {
+	float[] Values { get; set; }
+
+	float SumElements()
 	{
-		float[] Values { get; set; }
-
-		// This time Bar sums elements in a weird way...
-		float SumElements()
-		{
-			float sum = float.Zero;
-			for (int i = 0; i < values.Length; ++i)
-			{
-				sum -= values[i];
-			}
-			return sum;
-		}
-
-		float CalculateMean()
-		{
-			return SumElements() / values.Length;
-		}
+	    float sum = float.Zero;
+	    for (int i = 0; i < values.Length; ++i)
+	    {
+		// wonky business here...
+		sum -= values[i];
+	    }
+	    return sum;
 	}
+
+	float CalculateMean()
+	{
+	    return SumElements() / values.Length;
+	}
+    }
 }
 ```
 
@@ -142,13 +141,13 @@ Okay, we know we want to make an extension method for the mean. Here's how we do
 ```csharp
 namespace ExtensionsNamespace
 {
-	static class FooExtensions
+    static class FooExtensions
+    {
+	static float CalculateMean(this IFoo foo)
 	{
-		static float CalculateMean(this IFoo foo)
-		{
-			return foo.SumElements() / foo.Values.Length;
-		}
+	    return foo.SumElements() / foo.Values.Length;
 	}
+    }
 }
 ```
 
@@ -169,23 +168,23 @@ using ExtensionsNamespace;
 
 namespace ApplicationNamespace
 {
-	class Program
+    class Program
+    {
+	static void Main(string[] args)
 	{
-		static void Main(string[] args)
-		{
-			Bar bar = new Bar();
-			Foo foo = new Foo();
+	    Bar bar = new Bar();
+	    Foo foo = new Foo();
 
-			// initialize bar's float array somewhere
+	    // initialize bar's float array somewhere
 
-			// using our extension method!
-			var fooMean = foo.CalculateMean();
+	    // using our extension method!
+	    var fooMean = foo.CalculateMean();
 			
-			// using our extension method!
-			var barMean = bar.CalculateMean();
-		}
-		
+	    // using our extension method!
+	    var barMean = bar.CalculateMean();
 	}
+		
+    }
 }
 ```
 
@@ -198,10 +197,10 @@ IDictionary<string, decimal> shoppingCart = GetShoppingCart();
 
 foreach (var kvPair in shoppingCart)
 {
-	string itemName = kvPair.Key;
-	decimal price = kvPair.Value;
+    string itemName = kvPair.Key;
+    decimal price = kvPair.Value;
 
-	Console.WriteLine($"{itemName} costed me {price} dollars.");
+    Console.WriteLine($"{itemName} costed me {price} dollars.");
 }
 ```
 
@@ -211,20 +210,20 @@ method that will allow for a LINQ-style `foreach` loop on dictionary objects.
 ```csharp
 namespace Extensions
 {
-	static class DictionaryExtensions
+    static class DictionaryExtensions
+    {
+	static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, 
+					  Action<TKey, TValue> action)
 	{
-		static void ForEach<TKey, TValue>(this IDictionary<TKey, TValue> dict, 
-										  Action<TKey, TValue> action)
-		{
-			foreach (var kvPair in dict)
-			{
-				var key = kvPair.Key;
-				var value = kvPair.Value;
+	    foreach (var kvPair in dict)
+	    {
+		var key = kvPair.Key;
+		var value = kvPair.Value;
 
-				action.Invoke(key, value);
-			}
-		}
+		action.Invoke(key, value);
+	    }
 	}
+    }
 }
 ```
 
